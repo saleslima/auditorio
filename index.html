@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento de Auditório</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="/COPOM-NOVO (1).png" alt="COPOM Logo" class="logo">
+                <h1>Agendamento de Auditório</h1>
+            </div>
+            <div class="toggle-mode">
+                <button id="adminModeBtn">Administrador</button>
+                <button id="userModeBtn" class="active">Convidado</button>
+            </div>
+        </header>
+
+        <!-- Admin Panel -->
+        <div id="adminPanel" class="panel">
+            <div class="config-section">
+                <h2>Configuração do Mês</h2>
+                <div class="form-group">
+                    <label>Mês/Ano:</label>
+                    <select id="monthSelect"></select>
+                    <select id="yearSelect"></select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Dias Disponíveis:</label>
+                    <div class="days-selector">
+                        <label><input type="checkbox" value="0" checked> Domingo</label>
+                        <label><input type="checkbox" value="1" checked> Segunda</label>
+                        <label><input type="checkbox" value="2" checked> Terça</label>
+                        <label><input type="checkbox" value="3" checked> Quarta</label>
+                        <label><input type="checkbox" value="4" checked> Quinta</label>
+                        <label><input type="checkbox" value="5" checked> Sexta</label>
+                        <label><input type="checkbox" value="6" checked> Sábado</label>
+                    </div>
+                </div>
+
+                <div class="periods-config">
+                    <h3>Períodos do Dia</h3>
+                    <div id="periodsContainer">
+                        <div class="period-item">
+                            <input type="text" placeholder="Nome do período" value="Manhã" class="period-name">
+                            <input type="time" value="08:00" class="period-start">
+                            <input type="time" value="12:00" class="period-end">
+                            <button class="remove-period" disabled>×</button>
+                        </div>
+                    </div>
+                    <button id="addPeriodBtn" class="btn-secondary">+ Adicionar Período</button>
+                </div>
+
+                <button id="saveConfigBtn" class="btn-primary">Salvar Configuração</button>
+                <button id="reportBtn" class="btn-secondary" style="margin-left: 12px;">Ver Relatório</button>
+                <button id="manageBlockedDaysBtn" class="btn-secondary" style="margin-left: 12px;">Gerenciar Dias Bloqueados</button>
+                <button id="resetMonthBtn" class="btn-danger" style="margin-left: 12px;">Resetar Mês</button>
+            </div>
+        </div>
+
+        <!-- User Panel -->
+        <div id="userPanel" class="panel active">
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="nav-btn">←</button>
+                    <h2 id="calendarTitle"></h2>
+                    <button id="nextMonth" class="nav-btn">→</button>
+                </div>
+                <div id="calendar" class="calendar-grid"></div>
+            </div>
+        </div>
+
+        <!-- Booking Modal -->
+        <div id="bookingModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modalTitle"></h2>
+                <div id="periodsAvailable" class="periods-list"></div>
+            </div>
+        </div>
+
+        <!-- Report Modal -->
+        <div id="reportModal" class="modal">
+            <div class="modal-content report-modal">
+                <span class="close" id="closeReport">&times;</span>
+                <h2>Relatório de Reservas</h2>
+                <div id="reportContent" class="report-content"></div>
+            </div>
+        </div>
+
+        <!-- Blocked Days Modal -->
+        <div id="blockedDaysModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeBlockedDays">&times;</span>
+                <h2>Gerenciar Dias Bloqueados</h2>
+                <div class="calendar-section">
+                    <div class="calendar-header">
+                        <button id="prevMonthBlocked" class="nav-btn">←</button>
+                        <h3 id="blockedCalendarTitle"></h3>
+                        <button id="nextMonthBlocked" class="nav-btn">→</button>
+                    </div>
+                    <p class="blocked-days-info">Clique em um dia para bloquear ou desbloquear</p>
+                    <div id="blockedCalendar" class="calendar-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cancellation Modal -->
+        <div id="cancellationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeCancellation">&times;</span>
+                <h2>Cancelar Reserva</h2>
+                <div class="cancellation-form">
+                    <div class="form-group">
+                        <label for="cancelPassword">Senha de Administrador:</label>
+                        <input 
+                            type="password" 
+                            id="cancelPassword" 
+                            placeholder="Digite a senha"
+                            autocomplete="off"
+                        />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cancelRequestedBy">Quem solicitou o cancelamento:</label>
+                        <input 
+                            type="text" 
+                            id="cancelRequestedBy" 
+                            placeholder="Nome de quem solicitou"
+                            style="text-transform: uppercase;"
+                        />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cancelReason">Motivo do cancelamento:</label>
+                        <textarea 
+                            id="cancelReason" 
+                            placeholder="Descreva o motivo (mínimo 10 caracteres)"
+                            minlength="10"
+                            rows="4"
+                            style="text-transform: uppercase;"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="booking-actions">
+                        <button class="btn-secondary" id="cancelCancelBtn">Voltar</button>
+                        <button class="btn-primary" id="confirmCancelBtn" disabled>Confirmar Cancelamento</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script type="module" src="./script.js"></script>
+</body>
+</html>

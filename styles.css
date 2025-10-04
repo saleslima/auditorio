@@ -1,0 +1,891 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.toggle-mode {
+    display: flex;
+    gap: 10px;
+}
+
+.toggle-mode button {
+    padding: 10px 24px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.toggle-mode button.active {
+    background: #000;
+    color: white;
+    border-color: #000;
+}
+
+.toggle-mode button:hover:not(.active) {
+    border-color: #999;
+}
+
+.panel {
+    display: none;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.panel.active {
+    display: block;
+}
+
+.config-section h2 {
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group select {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-right: 10px;
+    cursor: pointer;
+    background: white;
+}
+
+.days-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.days-selector label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 400;
+}
+
+.days-selector label:hover {
+    border-color: #999;
+}
+
+.days-selector input[type="checkbox"]:checked + label,
+.days-selector label:has(input[type="checkbox"]:checked) {
+    background: #000;
+    color: white;
+    border-color: #000;
+}
+
+.periods-config h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+#periodsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.period-item {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px 40px;
+    gap: 12px;
+    align-items: center;
+}
+
+.period-item input {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.remove-period {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ff4444;
+    background: white;
+    color: #ff4444;
+    border-radius: 8px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.remove-period:hover:not(:disabled) {
+    background: #ff4444;
+    color: white;
+}
+
+.remove-period:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.btn-primary, .btn-secondary, .btn-danger {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #000;
+    color: white;
+    margin-top: 24px;
+}
+
+.btn-primary:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: white;
+    border: 2px solid #000;
+    color: #000;
+}
+
+.btn-secondary:hover {
+    background: #f5f5f5;
+}
+
+.btn-danger {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f44336;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #d32f2f;
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    background: #d32f2f;
+    transform: translateY(-2px);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.calendar-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.nav-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ddd;
+    background: white;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    border-color: #000;
+    background: #000;
+    color: white;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.calendar-day:hover:not(.disabled):not(.empty) {
+    border-color: #000;
+    transform: scale(1.05);
+}
+
+.calendar-day.disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.calendar-day.empty {
+    border: none;
+    cursor: default;
+}
+
+.calendar-day.available {
+    background: #4caf50;
+    border-color: #4caf50;
+    color: white;
+}
+
+.calendar-day.partially-booked {
+    background: #ffd700;
+    border-color: #ffd700;
+    color: #333;
+}
+
+.calendar-day.fully-booked {
+    background: #f44336;
+    border-color: #f44336;
+    color: white;
+    cursor: not-allowed;
+}
+
+.calendar-day.blocked {
+    background: #9e9e9e;
+    border-color: #9e9e9e;
+    color: white;
+    cursor: not-allowed;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 32px;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #000;
+}
+
+#modalTitle {
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+.periods-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.period-card {
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.period-card:hover:not(.booked) {
+    border-color: #000;
+    transform: translateX(4px);
+}
+
+.period-card.booked {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.period-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.period-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+.period-card.booked::after {
+    content: "RESERVADO";
+    display: block;
+    margin-top: 8px;
+    font-weight: 600;
+    color: #f44336;
+}
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-info {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+.booking-form label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.booking-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans', sans-serif;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.booking-form textarea:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.booking-form input[type="text"],
+.booking-form input[type="tel"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.booking-form input:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.char-counter {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+}
+
+.booking-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.booking-actions button {
+    flex: 1;
+    margin: 0;
+}
+
+.booking-actions .btn-primary:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.booking-actions .btn-primary:disabled:hover {
+    background: #ccc;
+    transform: none;
+}
+
+.report-modal {
+    max-width: 800px;
+}
+
+.report-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.no-bookings {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 16px;
+}
+
+.report-date-group h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ddd;
+}
+
+.report-bookings {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.report-booking-card {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background: white;
+}
+
+.report-booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.report-booking-header strong {
+    font-size: 16px;
+}
+
+.report-booking-time {
+    font-size: 14px;
+    color: #666;
+}
+
+.report-booking-details p {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.report-booking-details strong {
+    color: #000;
+    font-weight: 600;
+}
+
+.report-booking-timestamp {
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #999;
+}
+
+.blocked-days-info {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.report-booking-cancellation {
+    margin-top: 12px;
+    padding: 12px;
+    background: #ffebee;
+    border-left: 4px solid #f44336;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.report-booking-cancellation strong {
+    color: #f44336;
+}
+
+.cancellation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cancellation-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cancellation-form label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cancellation-form input,
+.cancellation-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+.cancellation-form input:focus,
+.cancellation-form textarea:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.cancellation-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Connection status indicator */
+.connection-status {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.connection-status.online {
+    background: #4caf50;
+    color: white;
+}
+
+.connection-status.offline {
+    background: #ff9800;
+    color: white;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    header {
+        padding: 20px;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+
+    .logo {
+        height: 50px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .toggle-mode {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .toggle-mode button {
+        flex: 1;
+        padding: 12px 16px;
+        font-size: 13px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .config-section h2 {
+        font-size: 20px;
+    }
+
+    .form-group select {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+
+    .days-selector {
+        gap: 8px;
+    }
+
+    .days-selector label {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .period-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .remove-period {
+        width: 100%;
+        height: 44px;
+    }
+
+    .btn-primary, .btn-secondary, .btn-danger {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 14px;
+        margin-top: 12px;
+    }
+
+    .calendar-grid {
+        gap: 4px;
+        font-size: 14px;
+    }
+
+    .calendar-day {
+        font-size: 13px;
+    }
+
+    .calendar-header h2 {
+        font-size: 18px;
+    }
+
+    .nav-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 24px;
+        max-height: 90vh;
+    }
+
+    .report-modal {
+        max-width: 95%;
+    }
+
+    #modalTitle {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .period-card {
+        padding: 16px;
+    }
+
+    .period-card h3 {
+        font-size: 16px;
+    }
+
+    .booking-form {
+        gap: 12px;
+    }
+
+    .booking-form input[type="text"],
+    .booking-form input[type="tel"],
+    .booking-form textarea {
+        font-size: 16px;
+    }
+
+    .booking-actions {
+        flex-direction: column;
+    }
+
+    .booking-actions button {
+        width: 100%;
+    }
+
+    .report-date-group h3 {
+        font-size: 18px;
+    }
+
+    .report-booking-card {
+        padding: 12px;
+    }
+
+    .report-booking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .close {
+        font-size: 28px;
+        top: 16px;
+        right: 16px;
+    }
+
+    .connection-status {
+        bottom: 10px;
+        right: 10px;
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 18px;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .toggle-mode button {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .calendar-grid {
+        gap: 2px;
+    }
+
+    .calendar-day {
+        font-size: 12px;
+        border-width: 1px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .btn-primary, .btn-secondary, .btn-danger {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+}
