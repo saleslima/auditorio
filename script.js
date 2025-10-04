@@ -19,7 +19,7 @@ try {
     console.log('📊 Database URL:', firebaseConfig.databaseURL);
 } catch (error) {
     console.error('❌ Falha na inicialização do Firebase:', error);
-    console.log('⚠ A aplicação funcionará em modo offline');
+    alert('❌ ERRO CRÍTICO: Não foi possível conectar ao Firebase. A aplicação não pode funcionar sem conexão com o banco de dados.');
     firebaseDB = null;
 }
 
@@ -71,7 +71,8 @@ function saveToLocalStorage() {
 
 async function loadFromFirebase() {
     if (!isFirebaseAvailable()) {
-        console.log('⚠ Firebase não disponível - usando localStorage');
+        console.error('❌ Firebase não está disponível');
+        alert('❌ ERRO: Não foi possível conectar ao Firebase. Recarregue a página.');
         state.isInitialized = true;
         return;
     }
@@ -102,14 +103,11 @@ async function loadFromFirebase() {
             state.blockedDays = blockedDaysSnapshot.val();
             console.log('✓ Dias bloqueados carregados do Firebase');
         }
-
-        saveToLocalStorage();
         
         // Set up real-time listeners
         configurationsRef.on('value', (snapshot) => {
             if (snapshot.exists() && !state.syncInProgress) {
                 state.configurations = snapshot.val();
-                saveToLocalStorage();
                 console.log('🔄 Configurações atualizadas em tempo real');
                 renderCalendarIfNeeded();
             }
@@ -118,7 +116,6 @@ async function loadFromFirebase() {
         bookingsRef.on('value', (snapshot) => {
             if (snapshot.exists() && !state.syncInProgress) {
                 state.bookings = snapshot.val();
-                saveToLocalStorage();
                 console.log('🔄 Agendamentos atualizados em tempo real');
                 renderCalendarIfNeeded();
             }
@@ -127,7 +124,6 @@ async function loadFromFirebase() {
         blockedDaysRef.on('value', (snapshot) => {
             if (snapshot.exists() && !state.syncInProgress) {
                 state.blockedDays = snapshot.val();
-                saveToLocalStorage();
                 console.log('🔄 Dias bloqueados atualizados em tempo real');
                 renderCalendarIfNeeded();
             }
@@ -141,7 +137,7 @@ async function loadFromFirebase() {
         renderCalendarIfNeeded();
     } catch (error) {
         console.error('❌ Erro ao conectar com Firebase:', error);
-        console.log('⚠ Continuando em modo offline');
+        alert('❌ ERRO: Não foi possível sincronizar com o Firebase. Verifique sua conexão e recarregue a página.');
         state.isOnline = false;
         state.isInitialized = true;
         showConnectionStatus(false);
@@ -150,7 +146,8 @@ async function loadFromFirebase() {
 
 async function saveToFirebase() {
     if (!isFirebaseAvailable()) {
-        console.log('⚠ Firebase não disponível - salvando apenas localmente');
+        console.error('❌ Firebase não disponível');
+        alert('❌ ERRO: Não é possível salvar. Sem conexão com Firebase.');
         return;
     }
 
@@ -166,6 +163,7 @@ async function saveToFirebase() {
         showConnectionStatus(true);
     } catch (error) {
         console.error('❌ Erro ao salvar no Firebase:', error);
+        alert('❌ ERRO: Não foi possível salvar os dados. Verifique sua conexão.');
         state.isOnline = false;
         showConnectionStatus(false);
     } finally {
@@ -191,24 +189,23 @@ function showConnectionStatus(online) {
         }, 3000);
     } else {
         indicator.className = 'connection-status offline';
-        indicator.innerHTML = '● Offline - Dados salvos localmente';
+        indicator.innerHTML = '● Offline - Sem conexão com Firebase';
         indicator.style.display = 'flex';
     }
 }
 
 function saveState() {
-    saveToLocalStorage();
-    console.log('💾 Salvando dados...');
+    console.log('💾 Salvando dados no Firebase...');
     if (state.isInitialized) {
         saveToFirebase().catch(err => {
-            console.warn('⚠ Sincronização com Firebase falhou, dados salvos localmente:', err);
+            console.error('❌ Falha ao salvar no Firebase:', err);
+            alert('❌ ERRO: Não foi possível salvar. Verifique sua conexão com a internet.');
         });
     }
 }
 
 function loadState() {
-    console.log('📂 Carregando dados...');
-    loadFromLocalStorage();
+    console.log('📂 Carregando dados do Firebase...');
     
     let attempts = 0;
     const maxAttempts = 30;
@@ -221,10 +218,10 @@ function loadState() {
             clearInterval(checkFirebase);
             loadFromFirebase();
         } else if (attempts >= maxAttempts) {
-            console.log('⏱ Timeout na inicialização do Firebase');
+            console.error('⏱ Timeout na inicialização do Firebase');
             clearInterval(checkFirebase);
             state.isInitialized = true;
-            console.log('⚠ Funcionando em modo offline');
+            alert('❌ ERRO: Não foi possível conectar ao Firebase. A aplicação requer conexão com o banco de dados.');
             showConnectionStatus(false);
         }
     }, 100);
@@ -990,14 +987,15 @@ window.addEventListener('online', () => {
     console.log('🌐 Conexão restaurada');
     showConnectionStatus(true);
     if (state.isInitialized) {
-        saveToFirebase();
+        loadFromFirebase();
     }
 });
 
 window.addEventListener('offline', () => {
-    console.log('📵 Conexão perdida - trabalhando offline');
+    console.log('📵 Conexão perdida');
     state.isOnline = false;
     showConnectionStatus(false);
+    alert('⚠️ AVISO: Conexão com a internet perdida. Não será possível salvar ou receber atualizações até reconectar.');
 });
 
 // Initialize application
@@ -1015,7 +1013,7 @@ function initApp() {
             if (state.isOnline) {
                 console.log('✓ Conectado ao banco de dados Firebase');
             } else {
-                console.log('⚠ Modo offline - os dados serão salvos localmente');
+                console.log('❌ Sem conexão com Firebase');
             }
         }
     }, 100);
@@ -1023,7 +1021,8 @@ function initApp() {
     setTimeout(() => {
         clearInterval(checkInitialized);
         if (!state.isInitialized) {
-            console.log('⚠ Timeout na inicialização - usando dados locais');
+            console.error('⚠ Timeout na inicialização');
+            alert('❌ ERRO: Tempo limite excedido ao tentar conectar ao Firebase.');
             renderCalendar();
         }
     }, 6000);
