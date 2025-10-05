@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento de Auditório</title>
+    <title>Agendamento de Fisioterapia</title>
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -12,11 +12,11 @@
         <header>
             <div class="header-content">
                 <img src="logo.png" alt="COPOM Logo" class="logo">
-                <h1>Agendamento de Auditório</h1>
+                <h1>Agendamento de Fisioterapia</h1>
             </div>
             <div class="toggle-mode">
                 <button id="adminModeBtn">Administrador</button>
-                <button id="userModeBtn" class="active">Convidado</button>
+                <button id="userModeBtn" class="active">Paciente</button>
             </div>
         </header>
 
@@ -50,6 +50,7 @@
                             <input type="text" placeholder="Nome do período" value="Manhã" class="period-name">
                             <input type="time" value="08:00" class="period-start">
                             <input type="time" value="12:00" class="period-end">
+                            <input type="number" placeholder="Vagas" value="5" min="1" class="period-slots">
                             <button class="remove-period" disabled>×</button>
                         </div>
                     </div>
@@ -59,6 +60,7 @@
                 <button id="saveConfigBtn" class="btn-primary">Salvar Configuração</button>
                 <button id="reportBtn" class="btn-secondary" style="margin-left: 12px;">Ver Relatório</button>
                 <button id="manageBlockedDaysBtn" class="btn-secondary" style="margin-left: 12px;">Gerenciar Dias Bloqueados</button>
+                <button id="customizeDayBtn" class="btn-secondary" style="margin-left: 12px;">Personalizado</button>
                 <button id="resetMonthBtn" class="btn-danger" style="margin-left: 12px;">Resetar Mês</button>
             </div>
         </div>
@@ -106,6 +108,41 @@
                     </div>
                     <p class="blocked-days-info">Clique em um dia para bloquear ou desbloquear</p>
                     <div id="blockedCalendar" class="calendar-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customize Day Modal -->
+        <div id="customizeDayModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeCustomizeDay">&times;</span>
+                <h2>Personalizar Dia Específico</h2>
+                <div class="calendar-section">
+                    <div class="calendar-header">
+                        <button id="prevMonthCustomize" class="nav-btn">←</button>
+                        <h3 id="customizeCalendarTitle"></h3>
+                        <button id="nextMonthCustomize" class="nav-btn">→</button>
+                    </div>
+                    <p class="blocked-days-info">Clique em um dia para personalizar períodos e vagas (apenas dias sem agendamentos)</p>
+                    <div id="customizeCalendar" class="calendar-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customize Day Form Modal -->
+        <div id="customizeDayFormModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeCustomizeDayForm">&times;</span>
+                <h2 id="customizeDayFormTitle"></h2>
+                <div class="periods-config">
+                    <h3>Períodos do Dia</h3>
+                    <div id="customDayPeriodsContainer"></div>
+                    <button id="addCustomPeriodBtn" class="btn-secondary">+ Adicionar Período</button>
+                </div>
+                <div class="booking-actions" style="margin-top: 24px;">
+                    <button class="btn-secondary" id="cancelCustomDayBtn">Cancelar</button>
+                    <button class="btn-danger" id="removeCustomDayBtn">Remover Personalização</button>
+                    <button class="btn-primary" id="saveCustomDayBtn">Salvar</button>
                 </div>
             </div>
         </div>
@@ -158,6 +195,12 @@
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script type="module" src="./firebase.js"></script>
+    <script type="module" src="./state.js"></script>
+    <script type="module" src="./calendar.js"></script>
+    <script type="module" src="./booking.js"></script>
+    <script type="module" src="./admin.js"></script>
+    <script type="module" src="./modals.js"></script>
     <script type="module" src="./script.js"></script>
 </body>
 </html>

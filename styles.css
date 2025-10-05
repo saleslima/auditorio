@@ -156,7 +156,7 @@ h1 {
 
 .period-item {
     display: grid;
-    grid-template-columns: 1fr 120px 120px 40px;
+    grid-template-columns: 1fr 120px 120px 80px 40px;
     gap: 12px;
     align-items: center;
 }
@@ -440,6 +440,16 @@ h1 {
     color: #f44336;
 }
 
+.slots-info {
+    margin-top: 8px;
+    color: #4caf50;
+    font-size: 14px;
+}
+
+.period-card.booked .slots-info {
+    color: #f44336;
+}
+
 .booking-form {
     display: flex;
     flex-direction: column;
@@ -501,7 +511,9 @@ h1 {
     margin-top: 8px;
 }
 
-.booking-actions button {
+.booking-actions .btn-primary,
+.booking-actions .btn-secondary,
+.booking-actions .btn-danger {
     flex: 1;
     margin: 0;
 }
