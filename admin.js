@@ -34,6 +34,7 @@ export function initializeAdminPanel() {
     document.getElementById('manageBlockedDaysBtn').addEventListener('click', showBlockedDaysModal);
     document.getElementById('resetMonthBtn').addEventListener('click', resetMonth);
     document.getElementById('customizeDayBtn').addEventListener('click', showCustomizeDayModal);
+    document.getElementById('generatePdfBtn').addEventListener('click', generateMonthPDF);
 
     updateRemoveButtons();
 }
@@ -129,7 +130,7 @@ function resetMonth() {
     const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     
-    const confirmMsg = `Tem certeza que deseja RESETAR todos os dados de ${months[month]} ${year}?\\n\\nIsto irá apagar:\\n- Configurações do mês\\n- Todos os agendamentos\\n- Dias bloqueados\\n\\nEsta ação não pode ser desfeita!`;
+    const confirmMsg = `Tem certeza que deseja RESETAR todos os dados de ${months[month]} ${year}?\\n\\nIsto irá apagar:\\n- Configurações do mês\\n- Todos os agendamentos\\n- Dias bloqueados\\n- Configurações personalizadas de dias\\n\\nEsta ação não pode ser desfeita!`;
     
     if (!confirm(confirmMsg)) {
         return;
@@ -151,6 +152,14 @@ function resetMonth() {
         const [blockedYear, blockedMonth] = dateKey.split('-').map(Number);
         if (blockedYear === year && blockedMonth === month) {
             delete state.blockedDays[dateKey];
+        }
+    });
+    
+    const customKeys = Object.keys(state.customDayConfigurations || {});
+    customKeys.forEach(dateKey => {
+        const [customYear, customMonth] = dateKey.split('-').map(Number);
+        if (customYear === year && customMonth === month) {
+            delete state.customDayConfigurations[dateKey];
         }
     });
     
@@ -371,4 +380,135 @@ function saveCustomDayConfiguration(dateKey) {
     saveState();
     renderCalendar();
     alert('Configuração personalizada salva com sucesso!');
+}
+
+function generateMonthPDF() {
+    const monthSelect = document.getElementById('monthSelect');
+    const yearSelect = document.getElementById('yearSelect');
+    const month = parseInt(monthSelect.value);
+    const year = parseInt(yearSelect.value);
+    
+    const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    
+    const configKey = `${year}-${month}`;
+    const config = state.configurations[configKey];
+    
+    if (!config) {
+        alert('Configure o mês antes de gerar o PDF.');
+        return;
+    }
+    
+    // Filter bookings for the selected month
+    const monthBookings = {};
+    Object.keys(state.bookings).forEach(dateKey => {
+        const [bookingYear, bookingMonth] = dateKey.split('-').map(Number);
+        if (bookingYear === year && bookingMonth === month) {
+            monthBookings[dateKey] = state.bookings[dateKey];
+        }
+    });
+    
+    if (Object.keys(monthBookings).length === 0) {
+        alert('Não há agendamentos para este mês.');
+        return;
+    }
+    
+    // Create PDF content
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.setFont(undefined, 'bold');
+    doc.text(`Relatório de Agendamentos - ${months[month]} ${year}`, 105, 20, { align: 'center' });
+    
+    let yPosition = 35;
+    
+    // Sort dates
+    const sortedDates = Object.keys(monthBookings).sort();
+    
+    sortedDates.forEach(dateKey => {
+        const [, , day] = dateKey.split('-').map(Number);
+        const dayBookings = monthBookings[dateKey];
+        
+        // Check if we need a new page
+        if (yPosition > 270) {
+            doc.addPage();
+            yPosition = 20;
+        }
+        
+        // Date header
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text(`${day} de ${months[month]} de ${year}`, 20, yPosition);
+        yPosition += 8;
+        
+        dayBookings.forEach(booking => {
+            const customConfig = state.customDayConfigurations && state.customDayConfigurations[dateKey];
+            const effectiveConfig = customConfig || config;
+            const period = effectiveConfig?.periods[booking.periodIndex];
+            
+            if (!period) return;
+            
+            // Check if we need a new page
+            if (yPosition > 260) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            // Period name and time
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${period.name} (${period.start} - ${period.end})`, 25, yPosition);
+            yPosition += 6;
+            
+            // Booking details
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+            doc.text(`Paciente: ${booking.name}`, 25, yPosition);
+            yPosition += 5;
+            doc.text(`WhatsApp: ${booking.phone}`, 25, yPosition);
+            yPosition += 5;
+            
+            if (booking.entity) {
+                doc.text(`Entidade: ${booking.entity}`, 25, yPosition);
+                yPosition += 5;
+            }
+            
+            if (booking.details) {
+                const details = doc.splitTextToSize(`Descrição: ${booking.details}`, 160);
+                doc.text(details, 25, yPosition);
+                yPosition += (details.length * 5);
+            }
+            
+            doc.setFontSize(8);
+            doc.setTextColor(128);
+            doc.text(`Reservado em: ${new Date(booking.timestamp).toLocaleString('pt-BR')}`, 25, yPosition);
+            yPosition += 5;
+            
+            // Cancellation info
+            if (booking.cancellation) {
+                doc.setTextColor(255, 0, 0);
+                doc.setFont(undefined, 'bold');
+                doc.text('CANCELADO', 25, yPosition);
+                yPosition += 5;
+                doc.setFont(undefined, 'normal');
+                doc.text(`Motivo: ${booking.cancellation.reason}`, 25, yPosition);
+                yPosition += 5;
+                doc.text(`Solicitado por: ${booking.cancellation.requestedBy}`, 25, yPosition);
+                yPosition += 5;
+                doc.text(`Cancelado em: ${new Date(booking.cancellation.timestamp).toLocaleString('pt-BR')}`, 25, yPosition);
+                yPosition += 5;
+            }
+            
+            doc.setTextColor(0);
+            yPosition += 3;
+        });
+        
+        yPosition += 5;
+    });
+    
+    // Save PDF
+    const fileName = `${months[month]}_${year}.pdf`;
+    doc.save(fileName);
 }
