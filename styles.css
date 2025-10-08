@@ -30,7 +30,11 @@ body.dark-mode {
 
 body {
     font-family: 'Noto Sans', sans-serif;
-    background: var(--bg-primary);
+    background-image: url('logo2.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     color: var(--text-primary);
     line-height: 1.6;
     transition: background-color 0.3s ease, color 0.3s ease;
