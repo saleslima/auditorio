@@ -1,5 +1,5 @@
 {
-  "name": "GUARDA",
+  "name": "FISIO",
   "short_name": "FISIO",
   "description": "Agendamento",
   "start_url": "https://saleslima.github.io/auditorio/index.html",
@@ -22,4 +22,5 @@
       "purpose": "maskable any"
     }
   ]
+
 }
