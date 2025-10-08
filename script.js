@@ -10,6 +10,20 @@ function initializeModeToggle() {
     const userBtn = document.getElementById('userModeBtn');
     const adminPanel = document.getElementById('adminPanel');
     const userPanel = document.getElementById('userPanel');
+    const themeModeBtn = document.getElementById('themeModeBtn');
+
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    // Theme toggle
+    themeModeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const currentTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
+    });
 
     adminBtn.addEventListener('click', () => {
         const password = prompt('Digite a senha de administrador:');

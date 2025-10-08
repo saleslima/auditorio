@@ -222,7 +222,9 @@ export function renderCustomizeCalendar() {
         dayElement.textContent = day;
 
         const dateKey = `${state.customizeCalendarYear}-${state.customizeCalendarMonth}-${day}`;
-        const hasBookings = state.bookings[dateKey] && state.bookings[dateKey].length > 0;
+        // Check only for active (non-cancelled) bookings
+        const activeBookings = state.bookings[dateKey]?.filter(b => !b.cancellation) || [];
+        const hasBookings = activeBookings.length > 0;
         const hasCustomConfig = state.customDayConfigurations && state.customDayConfigurations[dateKey];
 
         if (hasBookings) {

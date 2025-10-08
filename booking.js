@@ -78,13 +78,16 @@ export function showBookingForm(dateKey, periodIndex, period, day) {
                 style="text-transform: uppercase;"
             />
 
-            <label for="bookingPhone">WhatsApp:</label>
+            <label for="bookingPhone">WhatsApp (DDD + Telefone):</label>
             <input 
                 type="tel" 
                 id="bookingPhone" 
-                placeholder="(00) 00000-0000"
+                placeholder="11999999999"
                 required
+                maxlength="11"
+                pattern="[0-9]{11}"
             />
+            <small style="color: #666; font-size: 12px;">Digite apenas números (11 dígitos)</small>
 
             <div class="booking-actions">
                 <button class="btn-secondary" id="cancelBooking">Cancelar</button>
@@ -102,10 +105,16 @@ function setupBookingFormHandlers(dateKey, periodIndex, day) {
     const confirmBtn = document.getElementById('confirmBooking');
     const cancelBtn = document.getElementById('cancelBooking');
 
+    // Format phone input to only accept numbers
+    phoneInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '');
+        validateForm();
+    });
+
     const validateForm = () => {
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
-        confirmBtn.disabled = !(name.length > 0 && phone.length > 0);
+        confirmBtn.disabled = !(name.length > 0 && phone.length === 11);
     };
 
     nameInput.addEventListener('input', () => {
@@ -113,17 +122,17 @@ function setupBookingFormHandlers(dateKey, periodIndex, day) {
         validateForm();
     });
 
-    phoneInput.addEventListener('input', validateForm);
-
     confirmBtn.disabled = true;
 
     confirmBtn.addEventListener('click', () => {
         const name = nameInput.value.trim();
         const phone = phoneInput.value.trim();
 
-        if (name && phone) {
+        if (name && phone.length === 11) {
             bookPeriod(dateKey, periodIndex, { name, phone });
             openBookingModal(day);
+        } else if (phone.length !== 11) {
+            alert('O WhatsApp deve conter exatamente 11 dígitos (DDD + Telefone)');
         }
     });
 

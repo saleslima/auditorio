@@ -149,8 +149,10 @@ export function toggleBlockedDay(dateKey) {
     if (state.blockedDays[dateKey]) {
         delete state.blockedDays[dateKey];
     } else {
-        if (state.bookings[dateKey] && state.bookings[dateKey].length > 0) {
-            alert('Não é possível bloquear este dia. Existem agendamentos que precisam ser cancelados primeiro.');
+        // Check only for active (non-cancelled) bookings
+        const activeBookings = state.bookings[dateKey]?.filter(b => !b.cancellation) || [];
+        if (activeBookings.length > 0) {
+            alert('Não é possível bloquear este dia. Existem agendamentos ativos que precisam ser cancelados primeiro.');
             return;
         }
         state.blockedDays[dateKey] = true;

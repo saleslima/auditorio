@@ -1,3 +1,27 @@
+:root {
+    --bg-primary: #f5f5f5;
+    --bg-secondary: white;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --border-color: #ddd;
+    --border-hover: #999;
+    --accent-primary: #000;
+    --accent-hover: #333;
+    --shadow: rgba(0,0,0,0.1);
+}
+
+body.dark-mode {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --border-color: #444;
+    --border-hover: #666;
+    --accent-primary: #fff;
+    --accent-hover: #e0e0e0;
+    --shadow: rgba(0,0,0,0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,9 +30,10 @@
 
 body {
     font-family: 'Noto Sans', sans-serif;
-    background: #f5f5f5;
-    color: #333;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -18,16 +43,17 @@ body {
 }
 
 header {
-    background: white;
+    background: var(--bg-secondary);
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px var(--shadow);
     margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 20px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .header-content {
@@ -50,12 +76,50 @@ h1 {
 .toggle-mode {
     display: flex;
     gap: 10px;
+    align-items: center;
+}
+
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary);
+    color: var(--bg-secondary);
+}
+
+.theme-toggle .sun-icon {
+    display: block;
+}
+
+.theme-toggle .moon-icon {
+    display: none;
+}
+
+body.dark-mode .theme-toggle .sun-icon {
+    display: none;
+}
+
+body.dark-mode .theme-toggle .moon-icon {
+    display: block;
 }
 
 .toggle-mode button {
     padding: 10px 24px;
-    border: 2px solid #ddd;
-    background: white;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
@@ -64,21 +128,22 @@ h1 {
 }
 
 .toggle-mode button.active {
-    background: #000;
-    color: white;
-    border-color: #000;
+    background: var(--accent-primary);
+    color: var(--bg-secondary);
+    border-color: var(--accent-primary);
 }
 
 .toggle-mode button:hover:not(.active) {
-    border-color: #999;
+    border-color: var(--border-hover);
 }
 
 .panel {
     display: none;
-    background: white;
+    background: var(--bg-secondary);
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .panel.active {
@@ -104,12 +169,14 @@ h1 {
 
 .form-group select {
     padding: 12px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 14px;
     margin-right: 10px;
     cursor: pointer;
-    background: white;
+    transition: all 0.3s ease;
 }
 
 .days-selector {
@@ -123,7 +190,9 @@ h1 {
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -131,14 +200,14 @@ h1 {
 }
 
 .days-selector label:hover {
-    border-color: #999;
+    border-color: var(--border-hover);
 }
 
 .days-selector input[type="checkbox"]:checked + label,
 .days-selector label:has(input[type="checkbox"]:checked) {
-    background: #000;
-    color: white;
-    border-color: #000;
+    background: var(--accent-primary);
+    color: var(--bg-secondary);
+    border-color: var(--accent-primary);
 }
 
 .periods-config h3 {
@@ -163,16 +232,19 @@ h1 {
 
 .period-item input {
     padding: 12px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 14px;
+    transition: all 0.3s ease;
 }
 
 .remove-period {
     width: 40px;
     height: 40px;
     border: 2px solid #ff4444;
-    background: white;
+    background: var(--bg-secondary);
     color: #ff4444;
     border-radius: 8px;
     font-size: 24px;
@@ -204,24 +276,24 @@ h1 {
 }
 
 .btn-primary {
-    background: #000;
-    color: white;
+    background: var(--accent-primary);
+    color: var(--bg-secondary);
     margin-top: 24px;
 }
 
 .btn-primary:hover {
-    background: #333;
+    background: var(--accent-hover);
     transform: translateY(-2px);
 }
 
 .btn-secondary {
-    background: white;
-    border: 2px solid #000;
-    color: #000;
+    background: var(--bg-secondary);
+    border: 2px solid var(--accent-primary);
+    color: var(--accent-primary);
 }
 
 .btn-secondary:hover {
-    background: #f5f5f5;
+    background: var(--bg-primary);
 }
 
 .btn-danger {
@@ -274,8 +346,9 @@ h1 {
 .nav-btn {
     width: 40px;
     height: 40px;
-    border: 2px solid #ddd;
-    background: white;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
@@ -283,9 +356,9 @@ h1 {
 }
 
 .nav-btn:hover {
-    border-color: #000;
-    background: #000;
-    color: white;
+    border-color: var(--accent-primary);
+    background: var(--accent-primary);
+    color: var(--bg-secondary);
 }
 
 .calendar-grid {
@@ -296,7 +369,7 @@ h1 {
 
 .calendar-day {
     aspect-ratio: 1;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -307,15 +380,25 @@ h1 {
     background: rgba(255, 255, 255, 0.85);
 }
 
+body.dark-mode .calendar-day {
+    background: rgba(45, 45, 45, 0.85);
+    color: #ffffff;
+}
+
 .calendar-day:hover:not(.disabled):not(.empty) {
-    border-color: #000;
+    border-color: var(--accent-primary);
     transform: scale(1.05);
 }
 
 .calendar-day.disabled {
     background: rgba(245, 245, 245, 0.85);
-    color: #999;
+    color: var(--text-secondary);
     cursor: not-allowed;
+}
+
+body.dark-mode .calendar-day.disabled {
+    background: rgba(60, 60, 60, 0.85);
+    color: #a0a0a0;
 }
 
 .calendar-day.empty {
@@ -332,7 +415,7 @@ h1 {
 .calendar-day.partially-booked {
     background: rgba(255, 215, 0, 0.85);
     border-color: #ffd700;
-    color: #333;
+    color: #ffffff;
 }
 
 .calendar-day.fully-booked {
@@ -367,7 +450,7 @@ h1 {
 }
 
 .modal-content {
-    background: white;
+    background: var(--bg-secondary);
     padding: 40px;
     border-radius: 12px;
     max-width: 500px;
@@ -375,6 +458,7 @@ h1 {
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
+    transition: background-color 0.3s ease;
 }
 
 .close {
@@ -383,12 +467,12 @@ h1 {
     right: 20px;
     font-size: 32px;
     cursor: pointer;
-    color: #999;
+    color: var(--text-secondary);
     transition: color 0.3s ease;
 }
 
 .close:hover {
-    color: #000;
+    color: var(--accent-primary);
 }
 
 #modalTitle {
@@ -405,20 +489,22 @@ h1 {
 
 .period-card {
     padding: 20px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .period-card:hover:not(.booked) {
-    border-color: #000;
+    border-color: var(--accent-primary);
     transform: translateX(4px);
 }
 
 .period-card.booked {
-    background: #f5f5f5;
-    color: #999;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
     cursor: not-allowed;
 }
 
@@ -429,7 +515,7 @@ h1 {
 
 .period-card p {
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .period-card.booked::after {
@@ -458,7 +544,7 @@ h1 {
 
 .booking-info {
     font-size: 16px;
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -471,37 +557,43 @@ h1 {
 .booking-form textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 14px;
     font-family: 'Noto Sans', sans-serif;
     resize: vertical;
     min-height: 80px;
+    transition: all 0.3s ease;
 }
 
 .booking-form textarea:focus {
     outline: none;
-    border-color: #000;
+    border-color: var(--accent-primary);
 }
 
 .booking-form input[type="text"],
 .booking-form input[type="tel"] {
     width: 100%;
     padding: 12px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 14px;
     font-family: 'Noto Sans', sans-serif;
+    transition: all 0.3s ease;
 }
 
 .booking-form input:focus {
     outline: none;
-    border-color: #000;
+    border-color: var(--accent-primary);
 }
 
 .char-counter {
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     text-align: right;
 }
 
@@ -542,7 +634,7 @@ h1 {
 .no-bookings {
     text-align: center;
     padding: 40px;
-    color: #999;
+    color: var(--text-secondary);
     font-size: 16px;
 }
 
@@ -551,7 +643,7 @@ h1 {
     font-weight: 600;
     margin-bottom: 16px;
     padding-bottom: 8px;
-    border-bottom: 2px solid #ddd;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .report-bookings {
@@ -561,10 +653,11 @@ h1 {
 }
 
 .report-booking-card {
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     padding: 16px;
-    background: white;
+    background: var(--bg-secondary);
+    transition: all 0.3s ease;
 }
 
 .report-booking-header {
@@ -582,7 +675,7 @@ h1 {
 
 .report-booking-time {
     font-size: 14px;
-    color: #666;
+    color: var(--text-secondary);
 }
 
 .report-booking-details p {
@@ -592,26 +685,27 @@ h1 {
 }
 
 .report-booking-details strong {
-    color: #000;
+    color: #ffffff;
     font-weight: 600;
 }
 
 .report-booking-timestamp {
     margin-top: 12px;
     padding-top: 8px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
     font-size: 12px;
-    color: #999;
+    color: var(--text-secondary);
 }
 
 .blocked-days-info {
     text-align: center;
-    color: #666;
+    color: var(--text-secondary);
     font-size: 14px;
     margin-bottom: 16px;
     padding: 12px;
-    background: #f5f5f5;
+    background: var(--bg-primary);
     border-radius: 8px;
+    transition: background-color 0.3s ease;
 }
 
 .report-booking-cancellation {
@@ -649,16 +743,19 @@ h1 {
 .cancellation-form textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     border-radius: 8px;
     font-size: 14px;
     font-family: 'Noto Sans', sans-serif;
+    transition: all 0.3s ease;
 }
 
 .cancellation-form input:focus,
 .cancellation-form textarea:focus {
     outline: none;
-    border-color: #000;
+    border-color: var(--accent-primary);
 }
 
 .cancellation-form textarea {
