@@ -1,5 +1,5 @@
 // Application state management module
-import { firebaseDB, isFirebaseAvailable } from './firebase.js';
+import { firebaseDB, isFirebaseAvailable, waitForFirebase } from './firebase.js';
 
 export const state = {
     currentMode: 'user',
@@ -48,7 +48,10 @@ export function saveToLocalStorage() {
 }
 
 export async function loadFromFirebase() {
-    if (!isFirebaseAvailable()) {
+    // Wait for Firebase to be ready
+    const isReady = await waitForFirebase();
+    
+    if (!isReady || !isFirebaseAvailable()) {
         console.error('❌ Firebase não está disponível');
         alert('❌ ERRO: Não foi possível conectar ao Firebase. Recarregue a página.');
         state.isInitialized = true;
@@ -58,10 +61,11 @@ export async function loadFromFirebase() {
     try {
         console.log('🔄 Conectando ao Firebase...');
 
-        const configurationsRef = firebaseDB.ref('configurations');
-        const bookingsRef = firebaseDB.ref('bookings');
-        const blockedDaysRef = firebaseDB.ref('blockedDays');
-        const customDayConfigurationsRef = firebaseDB.ref('customDayConfigurations');
+        const db = firebaseDB;
+        const configurationsRef = db.ref('configurations');
+        const bookingsRef = db.ref('bookings');
+        const blockedDaysRef = db.ref('blockedDays');
+        const customDayConfigurationsRef = db.ref('customDayConfigurations');
 
         const [configurationsSnapshot, bookingsSnapshot, blockedDaysSnapshot, customDayConfigurationsSnapshot] = await Promise.all([
             configurationsRef.once('value'),
@@ -135,7 +139,10 @@ function setupRealtimeListeners(configurationsRef, bookingsRef, blockedDaysRef, 
 }
 
 export async function saveToFirebase() {
-    if (!isFirebaseAvailable()) {
+    // Wait for Firebase to be ready
+    const isReady = await waitForFirebase();
+    
+    if (!isReady || !isFirebaseAvailable()) {
         console.error('❌ Firebase não disponível');
         alert('❌ ERRO: Não é possível salvar. Sem conexão com Firebase.');
         return;
@@ -144,10 +151,11 @@ export async function saveToFirebase() {
     try {
         state.syncInProgress = true;
 
-        await firebaseDB.ref('configurations').set(state.configurations);
-        await firebaseDB.ref('bookings').set(state.bookings);
-        await firebaseDB.ref('blockedDays').set(state.blockedDays);
-        await firebaseDB.ref('customDayConfigurations').set(state.customDayConfigurations);
+        const db = firebaseDB;
+        await db.ref('configurations').set(state.configurations);
+        await db.ref('bookings').set(state.bookings);
+        await db.ref('blockedDays').set(state.blockedDays);
+        await db.ref('customDayConfigurations').set(state.customDayConfigurations);
 
         state.isOnline = true;
         console.log('✓ Dados sincronizados com Firebase');
@@ -170,24 +178,9 @@ export function saveState() {
     }
 }
 
-export function loadState() {
+export async function loadState() {
     console.log('📂 Carregando dados do Firebase...');
-
-    let attempts = 0;
-    const maxAttempts = 30;
-
-    const checkFirebase = setInterval(() => {
-        attempts++;
-
-        if (firebaseDB !== undefined && firebaseDB !== null) {
-            console.log('✓ Firebase detectado');
-            clearInterval(checkFirebase);
-            loadFromFirebase();
-        } else if (attempts >= maxAttempts) {
-            console.error('⏱ Timeout na inicialização do Firebase');
-            clearInterval(checkFirebase);
-            state.isInitialized = true;
-            alert('❌ ERRO: Não foi possível conectar ao Firebase. A aplicação requer conexão com o banco de dados.');
-        }
-    }, 100);
+    
+    // Wait for Firebase to be ready before loading
+    await loadFromFirebase();
 }

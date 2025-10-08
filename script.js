@@ -49,7 +49,9 @@ function initializeModeToggle() {
     });
 }
 
-function initApp() {
+async function initApp() {
+    console.log('🚀 Iniciando aplicação...');
+    
     initializeModeToggle();
     initializeAdminPanel();
     initializeUserPanel();
@@ -74,27 +76,19 @@ function initApp() {
         showCancellationModal(e.detail.dateKey, e.detail.bookingIndex);
     });
     
-    const checkInitialized = setInterval(() => {
-        if (state.isInitialized) {
-            clearInterval(checkInitialized);
-            renderCalendar();
-            
-            if (state.isOnline) {
-                console.log('✓ Conectado ao banco de dados Firebase');
-            } else {
-                console.log('❌ Sem conexão com Firebase');
-            }
-        }
-    }, 100);
+    // Load state and wait for it to complete
+    await loadState();
     
-    setTimeout(() => {
-        clearInterval(checkInitialized);
-        if (!state.isInitialized) {
-            console.error('⚠ Timeout na inicialização');
-            alert('❌ ERRO: Tempo limite excedido ao tentar conectar ao Firebase.');
-            renderCalendar();
+    // Render calendar after state is loaded
+    if (state.isInitialized) {
+        renderCalendar();
+        
+        if (state.isOnline) {
+            console.log('✓ Conectado ao banco de dados Firebase');
+        } else {
+            console.log('❌ Sem conexão com Firebase');
         }
-    }, 6000);
+    }
 }
 
 // Monitor online/offline status
@@ -111,9 +105,6 @@ window.addEventListener('offline', () => {
     state.isOnline = false;
     alert('⚠️ AVISO: Conexão com a internet perdida. Não será possível salvar ou receber atualizações até reconectar.');
 });
-
-// Load initial state
-loadState();
 
 // Start app when DOM is ready
 if (document.readyState === 'loading') {
